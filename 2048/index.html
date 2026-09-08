@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2048</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css?v=20260831f" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="title"><a class="title-link" href="/">2048</a></h1>
+      <p class="subtitle">Join the tiles, get to 2048!</p>
+    </header>
+
+    <main class="container">
+      <div class="score-bar">
+        <div class="score-box">
+          <span class="score-label">Score</span>
+          <span class="score-value" id="current-score">0</span>
+        </div>
+        <div class="score-box">
+          <span class="score-label">Best</span>
+          <span class="score-value" id="best-score">0</span>
+        </div>
+      </div>
+
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+        <div class="game-message" id="game-message">
+          <p id="message-text"></p>
+          <div class="message-buttons">
+            <button class="btn btn-primary" id="retry-btn">Try again</button>
+            <button class="btn btn-primary hidden" id="keep-playing-btn">Keep going</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="game-bar">
+        <div class="mode-pick" role="group" aria-label="Difficulty mode">
+          <button class="btn btn-pick active" data-mode="normal">Normal</button>
+          <button class="btn btn-pick" data-mode="baby">Baby</button>
+        </div>
+        <button class="btn btn-ghost" id="new-game-btn">New Game</button>
+      </div>
+
+      <p class="hint controls-hint">Use <span class="key-hint">Arrow Keys</span> or <span class="key-hint">WASD</span> to play</p>
+    </main>
+
+    <script src="js/app.js?v=20260831d"></script>
+  </body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Connect 4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css?v=20260831b" />
+  </head>
+  <body>
+    <header class="site-header">
+      <h1 class="title"><a class="title-link" href="/">Connect&nbsp;4</a></h1>
+      <p class="subtitle">A clean classic. Play a friend locally or online.</p>
+    </header>
+
+    <main class="container">
+      <!-- ===== MENU ===== -->
+      <section id="menu-view" class="view">
+        <div class="menu-grid">
+          <button class="menu-card" data-action="open-local">
+            <span class="menu-card-title">Two players (local)</span>
+            <span class="menu-card-desc">Red vs Yellow on the same screen.</span>
+          </button>
+          <button class="menu-card" data-action="open-online">
+            <span class="menu-card-title">Play online</span>
+            <span class="menu-card-desc">Share a room code with a friend.</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== LOCAL GAME ===== -->
+      <section id="local-view" class="view hidden">
+        <div class="game-bar">
+          <button class="btn btn-ghost" data-action="back-menu">Menu</button>
+          <div class="color-pick">
+            <button class="btn btn-pick is-red active" data-action="pick-red">Red</button>
+            <button class="btn btn-pick is-yellow" data-action="pick-yellow">Yellow</button>
+          </div>
+          <button class="btn btn-ghost" data-action="restart">Restart</button>
+        </div>
+
+        <div class="board-wrap">
+          <div class="board" id="local-board"></div>
+        </div>
+
+        <p class="status" id="local-status">Red's turn</p>
+      </section>
+
+      <!-- ===== ONLINE GAME ===== -->
+      <section id="online-view" class="view hidden">
+        <div class="game-bar">
+          <button class="btn btn-ghost" data-action="back-menu">Menu</button>
+          <button class="btn btn-ghost hidden" data-action="online-leave">Leave room</button>
+        </div>
+
+        <div id="online-lobby" class="lobby">
+          <div class="lobby-card">
+            <h2>Create a room</h2>
+            <div class="seg" role="group" aria-label="Room visibility">
+              <button type="button" class="btn seg-btn" data-room-type="public" aria-pressed="true">Public</button>
+              <button type="button" class="btn seg-btn" data-room-type="private" aria-pressed="false">Private</button>
+            </div>
+            <button class="btn btn-primary" data-action="online-create">Create room</button>
+            <p class="hint">Public rooms appear in the list below. Private rooms are joinable only with the code.</p>
+          </div>
+
+          <div class="lobby-card">
+            <h2>Public rooms</h2>
+            <ul id="public-rooms" class="room-list"></ul>
+            <p id="public-rooms-empty" class="hint">No public rooms open right now.</p>
+          </div>
+
+          <div class="lobby-card">
+            <h2>Join with code</h2>
+            <div class="join-row">
+              <input id="room-code" type="text" placeholder="Room code" maxlength="8" />
+              <button class="btn btn-primary" data-action="online-join">Join</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="online-game" class="hidden">
+          <p class="room-line">Room: <span id="online-room-id" class="room-code"></span></p>
+          <div class="board-wrap">
+            <div class="board" id="online-board"></div>
+          </div>
+          <p class="status" id="online-status">Waiting for players…</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/board.js?v=20260831b"></script>
+    <script src="js/ui.js?v=20260831b"></script>
+    <script src="js/local.js?v=20260831b"></script>
+    <script src="js/multiplayer.js?v=20260831b"></script>
+  </body>
+</html>

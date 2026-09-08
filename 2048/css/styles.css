@@ -1,0 +1,668 @@
+/* ===== Theme (pixel art) — matches connect-4 ===== */
+:root {
+  --bg: #1a1c2c;
+  --panel: #29366f;
+  --panel-2: #333c57;
+  --border: #0b0b14;
+  --ink: #f4f4f4;
+  --muted: #94b0c2;
+  --accent: #41a6f6;
+  --accent-dark: #3b5dc9;
+  --radius: 0px;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+  --font-term: "VT323", "Courier New", monospace;
+  --pixel-shadow: 4px 4px 0 #000;
+  --pixel-shadow-lg: 6px 6px 0 #000;
+
+  /* 2048 tile colors */
+  --tile-2: #6bb2e5;
+  --tile-2-dark: #4a7fa8;
+  --tile-2-text: #1a1c2c;
+  --tile-4: #2089d5;
+  --tile-4-dark: #16629b;
+  --tile-4-text: #f4f4f4;
+  --tile-8: #1c557d;
+  --tile-8-dark: #123a58;
+  --tile-8-text: #f4f4f4;
+  --tile-16: #ffd93d;
+  --tile-16-dark: #b8982a;
+  --tile-16-text: #1a1c2c;
+  --tile-32: #ffc300;
+  --tile-32-dark: #b38900;
+  --tile-32-text: #1a1c2c;
+  --tile-64: #ff9900;
+  --tile-64-dark: #b36b00;
+  --tile-64-text: #1a1c2c;
+  --tile-128: #ff6b00;
+  --tile-128-dark: #b34b00;
+  --tile-128-text: #1a1c2c;
+  --tile-256: #f53d2e;
+  --tile-256-dark: #ad2a20;
+  --tile-256-text: #f4f4f4;
+  --tile-512: #d91e18;
+  --tile-512-dark: #981511;
+  --tile-512-text: #f4f4f4;
+  --tile-1024: #a80f0a;
+  --tile-1024-dark: #760a07;
+  --tile-1024-text: #f4f4f4;
+  --tile-2048: #6e0b05;
+  --tile-2048-dark: #4c0804;
+  --tile-2048-text: #f4f4f4;
+  --tile-super: #ffcd75;
+  --tile-super-dark: #c98f2b;
+  --tile-super-text: #1a1c2c;
+
+  /* Board material — same retro language as connect-4. */
+  --board-frame: #11131f;
+  --cell-empty: #11131f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  /* Kill pull-to-refresh while letting normal scrolling work.
+     Must be on html too: when content overflows, html is the real
+     scrolling element and body-only rules don't stop the refresh. */
+  overscroll-behavior-y: none;
+}
+
+body {
+  font-family: var(--font-term);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding-bottom: 16px;
+  image-rendering: pixelated;
+  /* Prevent pull-to-refresh / rubber-band overscroll on touch devices. */
+  overscroll-behavior-y: none;
+  touch-action: manipulation;
+}
+
+/* ===== Header ===== */
+.site-header {
+  text-align: center;
+  padding: 20px 16px 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 26px);
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 3px 3px 0 #000;
+}
+
+/* The title is a link back to the games hub — keep the exact title look. */
+.title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== Layout ===== */
+.container {
+  width: 100%;
+  max-width: 860px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Score Bar ===== */
+.score-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.score-box {
+  flex: 1;
+  background: var(--panel);
+  border: 4px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--pixel-shadow-lg);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.score-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.score-value {
+  font-family: var(--font-pixel);
+  font-size: clamp(16px, 4vw, 22px);
+  color: var(--ink);
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ===== Board ===== */
+.board-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--panel);
+  border: 4px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--pixel-shadow-lg);
+  padding: 18px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Retro CRT scanlines over the board (purely visual, never blocks input). */
+.board-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.07) 0px,
+    rgba(0, 0, 0, 0.07) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  background: var(--panel);
+  border: 6px solid var(--board-frame);
+  border-radius: var(--radius);
+  padding: 12px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  image-rendering: pixelated;
+  /* Swipes on the board are game input only: the browser must never
+     interpret them as scroll or pull-to-refresh. */
+  touch-action: none;
+}
+
+/* Baby mode: 5x5 grid. Tracks use minmax(0, 1fr) like the 4x4 board so tile
+   content (e.g. the wide "1024" text) can NEVER stretch the cells — squares
+   always stay exactly the same size in both modes. Gap/padding are slimmer
+   than 4x4 so the smaller cells get as much room as possible. */
+.board-5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px;
+  border-width: 5px;
+}
+
+/* Baby mode board panel: larger than the 4x4 one (the .board-5 class lives on
+   the inner .board, reached via :has) and with slimmer padding. */
+.board-wrap:has(.board-5) {
+  max-width: 644px; /* 15% bigger than the 560px board */
+  padding: 14px;
+}
+
+/* ===== Tiles ===== */
+/* Base tile = empty slot: dark cavity, like the holes in the connect-4 board. */
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius);
+  border: 3px solid #000;
+  background: var(--cell-empty);
+  font-family: var(--font-pixel);
+  font-size: clamp(14px, 3.5vw, 28px);
+  font-weight: 400;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.12s steps(4);
+  user-select: none;
+  aspect-ratio: 1 / 1;
+  /* Size container: lets the digit-count rules below scale the font to the
+     tile's own width (cqw), so any number always fits its cell. */
+  container-type: inline-size;
+}
+
+/* Digit-count font sizing (class added by app.js): min() picks the smaller of
+   the viewport clamp and a cell-relative size (cqw), so the number always fits
+   its tile. The pixel font runs slightly wider than 1em/char and casts a 2px
+   shadow, so the cqw factors leave ~25% headroom (n chars ≈ n × cqw × 1.1). */
+.tile.d1 {
+  font-size: min(clamp(14px, 3.5vw, 28px), 55cqw);
+}
+
+.tile.d2 {
+  font-size: min(clamp(14px, 3.5vw, 28px), 36cqw);
+}
+
+.tile.d3 {
+  font-size: min(clamp(11px, 3.2vw, 26px), 24cqw);
+}
+
+.tile.d4 {
+  font-size: min(clamp(9px, 2.6vw, 24px), 18cqw);
+}
+
+.tile.tile-new {
+  animation: tile-appear 0.16s steps(4) forwards;
+}
+
+.tile.tile-merged {
+  animation: tile-merge 0.22s steps(5) forwards;
+  z-index: 10;
+}
+
+/* Filled tiles: solid pixel bevel, same formula as the connect-4 chips. */
+.tile-2 {
+  background: var(--tile-2);
+  color: var(--tile-2-text);
+  box-shadow: inset -5px -5px 0 var(--tile-2-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-4 {
+  background: var(--tile-4);
+  color: var(--tile-4-text);
+  box-shadow: inset -5px -5px 0 var(--tile-4-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-8 {
+  background: var(--tile-8);
+  color: var(--tile-8-text);
+  box-shadow: inset -5px -5px 0 var(--tile-8-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-16 {
+  background: var(--tile-16);
+  color: var(--tile-16-text);
+  box-shadow: inset -5px -5px 0 var(--tile-16-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+.tile-32 {
+  background: var(--tile-32);
+  color: var(--tile-32-text);
+  box-shadow: inset -5px -5px 0 var(--tile-32-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+.tile-64 {
+  background: var(--tile-64);
+  color: var(--tile-64-text);
+  box-shadow: inset -5px -5px 0 var(--tile-64-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+.tile-128 {
+  background: var(--tile-128);
+  color: var(--tile-128-text);
+  box-shadow: inset -5px -5px 0 var(--tile-128-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+.tile-256 {
+  background: var(--tile-256);
+  color: var(--tile-256-text);
+  box-shadow: inset -5px -5px 0 var(--tile-256-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-512 {
+  background: var(--tile-512);
+  color: var(--tile-512-text);
+  box-shadow: inset -5px -5px 0 var(--tile-512-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-1024 {
+  background: var(--tile-1024);
+  color: var(--tile-1024-text);
+  box-shadow: inset -5px -5px 0 var(--tile-1024-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.tile-2048 {
+  background: var(--tile-2048);
+  color: var(--tile-2048-text);
+  box-shadow: inset -5px -5px 0 var(--tile-2048-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+  animation: tile-glow 1.5s ease-in-out infinite alternate;
+}
+
+.tile-super {
+  background: var(--tile-super);
+  color: var(--tile-super-text);
+  box-shadow: inset -5px -5px 0 var(--tile-super-dark),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Tile animations */
+@keyframes tile-appear {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes tile-pop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Highlight for tiles that just merged: a big pulse + bright white flash so
+   the player instantly sees which two tiles combined. Uses filter (not
+   box-shadow) so each tile keeps its own solid pixel bevel while glowing. */
+@keyframes tile-merge {
+  0% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0.9));
+  }
+  40% {
+    transform: scale(1.25);
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.75));
+  }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+  }
+}
+
+@keyframes tile-glow {
+  0% {
+    box-shadow: inset -5px -5px 0 var(--tile-2048-dark),
+      inset 4px 4px 0 rgba(255, 255, 255, 0.25),
+      0 0 10px rgba(255, 205, 117, 0.5);
+  }
+  100% {
+    box-shadow: inset -5px -5px 0 var(--tile-2048-dark),
+      inset 4px 4px 0 rgba(255, 255, 255, 0.25),
+      0 0 20px rgba(255, 205, 117, 0.8);
+  }
+}
+
+/* ===== Minecraft-style merge particles ===== */
+/* Small squares in the merged tile's color that burst outward, fall with
+   gravity and vanish — like breaking a block. Direction/distance come from
+   --dx/--dy1/--dy2 set per particle in JS; steps() keeps the motion chunky. */
+.particle {
+  position: absolute;
+  border: 2px solid #000;
+  z-index: 1001; /* above the CRT scanline overlay */
+  pointer-events: none;
+  image-rendering: pixelated;
+  animation: particle-burst 0.45s steps(5, end) forwards;
+}
+
+@keyframes particle-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  55% {
+    transform: translate(calc(var(--dx) * 0.7), var(--dy1)) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy2)) scale(0.7);
+    opacity: 0;
+  }
+}
+
+/* ===== Game Message Overlay ===== */
+.game-message {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 28, 44, 0.85);
+  border: 6px solid #000;
+  border-radius: var(--radius);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: fade-in 0.15s steps(2) forwards;
+}
+
+.game-message.active {
+  display: flex;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.game-message p {
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 28px);
+  color: var(--ink);
+  text-shadow: 3px 3px 0 #000;
+  text-align: center;
+  margin: 0;
+}
+
+.message-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== Game Bar ===== */
+.game-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.hint {
+  font-family: var(--font-term);
+  font-size: 16px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.key-hint {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  background: var(--panel-2);
+  border: 2px solid #000;
+  padding: 4px 8px;
+  box-shadow: 2px 2px 0 #000;
+  display: inline-block;
+}
+
+/* ===== Mode picker (Normal 4x4 / Baby 5x5) ===== */
+.mode-pick {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-pick {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  border: 3px solid #000;
+  border-radius: 0;
+  background: var(--panel-2);
+  color: var(--ink);
+  padding: 8px 12px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #000;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.btn-pick:active {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 #000;
+}
+
+.btn-pick.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.controls-hint {
+  text-align: center;
+  margin: 14px 0 0;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  border: 3px solid #000;
+  border-radius: 0;
+  padding: 10px 14px;
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: var(--pixel-shadow);
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2),
+    background 0.08s steps(2);
+}
+
+.btn:hover {
+  background: #283252;
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+
+.btn-ghost {
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-dark);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ===== Bottom Link ===== */
+.bottom-link {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.bottom-link a {
+  text-decoration: none;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 520px) {
+  .board {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .tile {
+    font-size: clamp(10px, 3vw, 18px);
+    border-width: 2px;
+  }
+
+  .score-bar {
+    gap: 10px;
+  }
+
+  .score-box {
+    padding: 10px 12px;
+  }
+
+  .score-label {
+    font-size: 8px;
+  }
+
+  .score-value {
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+
+  .game-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-pick {
+    font-size: 8px;
+    padding: 7px 10px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .hint {
+    font-size: 14px;
+  }
+}

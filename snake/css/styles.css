@@ -1,0 +1,403 @@
+/* ===== Theme (pixel art) — matches connect-4 and 2048 ===== */
+:root {
+  --bg: #1a1c2c;
+  --panel: #29366f;
+  --panel-2: #333c57;
+  --border: #0b0b14;
+  --ink: #f4f4f4;
+  --muted: #94b0c2;
+  --accent: #41a6f6;
+  --accent-dark: #3b5dc9;
+  --red: #e43b44;
+  --red-dark: #a02c34;
+  --yellow: #ffcd75;
+  --radius: 0px;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+  --font-term: "VT323", "Courier New", monospace;
+  --pixel-shadow: 4px 4px 0 #000;
+  --pixel-shadow-lg: 6px 6px 0 #000;
+
+  /* Snake colors */
+  --snake: #63c74d;
+  --snake-dark: #3d8a2e;
+  --snake-head: #8ae55f;
+  --snake-head-dark: #5cb43a;
+  --board-frame: #11131f;
+  --cell-empty: #11131f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  /* Kill pull-to-refresh (accidental reloads wipe games) while letting
+     normal scrolling work. Must be on html too. */
+  overscroll-behavior-y: none;
+}
+
+body {
+  font-family: var(--font-term);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding-bottom: 16px;
+  image-rendering: pixelated;
+  /* Prevent double-tap zoom while letting normal scrolling work. */
+  touch-action: manipulation;
+}
+
+/* ===== Header ===== */
+.site-header {
+  text-align: center;
+  padding: 20px 16px 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 26px);
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 3px 3px 0 #000;
+}
+
+/* The title is a link back to the games hub — keep the exact title look. */
+.title-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== Layout ===== */
+.container {
+  width: 100%;
+  max-width: 860px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===== Score Bar ===== */
+.score-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.score-box {
+  flex: 1;
+  background: var(--panel);
+  border: 4px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--pixel-shadow-lg);
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.score-label {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.score-value {
+  font-family: var(--font-pixel);
+  font-size: clamp(16px, 4vw, 22px);
+  color: var(--ink);
+  text-shadow: 2px 2px 0 #000;
+}
+
+/* ===== Board ===== */
+.board-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--panel);
+  border: 4px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--pixel-shadow-lg);
+  padding: 18px;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Retro CRT scanlines over the board (purely visual, never blocks input). */
+.board-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.07) 0px,
+    rgba(0, 0, 0, 0.07) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 1000;
+}
+
+/* 20x20 grid. minmax(0, 1fr) keeps every cell exactly the same size no
+   matter what the content is. */
+.board {
+  display: grid;
+  grid-template-columns: repeat(20, minmax(0, 1fr));
+  grid-template-rows: repeat(20, minmax(0, 1fr));
+  gap: 2px;
+  background: var(--panel);
+  border: 6px solid var(--board-frame);
+  border-radius: var(--radius);
+  padding: 8px;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  image-rendering: pixelated;
+  /* Swipes on the board are game input only: the browser must never
+     interpret them as scroll or pull-to-refresh. Same as the 2048 board. */
+  touch-action: none;
+}
+
+/* Empty slot: dark cavity, like the holes in the connect-4 board. */
+.cell {
+  border-radius: var(--radius);
+  background: var(--cell-empty);
+  border: 1px solid #000;
+}
+
+/* Snake segments: solid pixel bevel, same formula as the connect-4 chips. */
+.snake {
+  border-radius: var(--radius);
+  border: 2px solid #000;
+  z-index: 2;
+  image-rendering: pixelated;
+}
+
+.snake-body {
+  background: var(--snake);
+  box-shadow: inset -3px -3px 0 var(--snake-dark),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Head is brighter so the direction is easy to read at a glance. */
+.snake-head {
+  background: var(--snake-head);
+  box-shadow: inset -3px -3px 0 var(--snake-head-dark),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.35);
+}
+
+/* Food: a little red chip, same look as a connect-4 piece. */
+.food {
+  border-radius: 50%;
+  border: 2px solid #000;
+  background: var(--red);
+  box-shadow: inset -3px -3px 0 var(--red-dark),
+    inset 2px 2px 0 rgba(255, 255, 255, 0.3);
+  z-index: 3;
+  image-rendering: pixelated;
+  animation: food-pop 0.3s steps(3) forwards;
+}
+
+@keyframes food-pop {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ===== Game Message Overlay ===== */
+.game-message {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(26, 28, 44, 0.85);
+  border: 6px solid #000;
+  border-radius: var(--radius);
+  z-index: 100;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  animation: fade-in 0.15s steps(2) forwards;
+}
+
+.game-message.active {
+  display: flex;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.game-message p {
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 28px);
+  color: var(--ink);
+  text-shadow: 3px 3px 0 #000;
+  text-align: center;
+  margin: 0;
+}
+
+.message-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* ===== Game Bar ===== */
+.game-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.hint {
+  font-family: var(--font-term);
+  font-size: 16px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.key-hint {
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  background: var(--panel-2);
+  border: 2px solid #000;
+  padding: 4px 8px;
+  box-shadow: 2px 2px 0 #000;
+  display: inline-block;
+}
+
+.controls-hint {
+  text-align: center;
+  margin: 14px 0 0;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  border: 3px solid #000;
+  border-radius: 0;
+  padding: 10px 14px;
+  font-weight: 400;
+  cursor: pointer;
+  box-shadow: var(--pixel-shadow);
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2),
+    background 0.08s steps(2);
+}
+
+.btn:hover {
+  background: #283252;
+}
+
+.btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+
+.btn-ghost {
+  background: var(--panel-2);
+  color: var(--ink);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-dark);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 520px) {
+  .board {
+    gap: 1px;
+    padding: 6px;
+  }
+
+  .snake,
+  .food {
+    border-width: 1px;
+  }
+
+  .score-bar {
+    gap: 10px;
+  }
+
+  .score-box {
+    padding: 10px 12px;
+  }
+
+  .score-label {
+    font-size: 8px;
+  }
+
+  .score-value {
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+
+  .game-bar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .hint {
+    font-size: 14px;
+  }
+}

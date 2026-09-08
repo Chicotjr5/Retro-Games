@@ -1,0 +1,260 @@
+/* ===== Theme (pixel art) — shared with the games ===== */
+:root {
+  --bg: #1a1c2c;
+  --panel: #29366f;
+  --panel-2: #333c57;
+  --border: #0b0b14;
+  --ink: #f4f4f4;
+  --muted: #94b0c2;
+  --accent: #41a6f6;
+  --accent-dark: #3b5dc9;
+  --red: #e43b44;
+  --yellow: #ffcd75;
+  --radius: 0px;
+  --font-pixel: "Press Start 2P", "Courier New", monospace;
+  --font-term: "VT323", "Courier New", monospace;
+  --pixel-shadow: 4px 4px 0 #000;
+  --pixel-shadow-lg: 6px 6px 0 #000;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-term);
+  background: var(--bg);
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding-bottom: 16px;
+  image-rendering: pixelated;
+}
+
+/* ===== Header ===== */
+.site-header {
+  text-align: center;
+  padding: 20px 16px 8px;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-size: clamp(18px, 4vw, 26px);
+  letter-spacing: 1px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-shadow: 3px 3px 0 #000;
+}
+
+.subtitle {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* ===== Layout ===== */
+.container {
+  width: 100%;
+  max-width: 860px;
+  padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Game cards (one per game) ===== */
+.games-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  text-align: center;
+  text-decoration: none;
+  background: var(--panel);
+  border: 4px solid #000;
+  border-radius: var(--radius);
+  box-shadow: var(--pixel-shadow-lg);
+  padding: 40px 28px;
+  cursor: pointer;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.game-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 #000;
+}
+
+.game-card:active {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+/* Signature chips per game (red/yellow for Connect 4). */
+.game-chips {
+  display: flex;
+  gap: 12px;
+}
+
+.chip {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid #000;
+}
+
+.chip-red {
+  background: var(--red);
+  box-shadow: inset -5px -5px 0 #a02c34, inset 4px 4px 0 rgba(255, 255, 255, 0.25);
+}
+
+.chip-yellow {
+  background: var(--yellow);
+  box-shadow: inset -5px -5px 0 #c98f2b, inset 4px 4px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* Signature tiles for 2048 */
+.chip-tile {
+  width: 34px;
+  height: 34px;
+  border-radius: 0;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Press Start 2P", "Courier New", monospace;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.chip-tile.chip-2 {
+  background: #6bb2e5;
+  color: #1a1c2c;
+  box-shadow: inset -4px -4px 0 #4a7fa8, inset 3px 3px 0 rgba(255, 255, 255, 0.25);
+}
+
+.chip-tile.chip-4 {
+  background: #2089d5;
+  color: #f4f4f4;
+  box-shadow: inset -4px -4px 0 #16629b, inset 3px 3px 0 rgba(255, 255, 255, 0.25);
+}
+
+.chip-tile.chip-8 {
+  background: #1c557d;
+  color: #f4f4f4;
+  box-shadow: inset -4px -4px 0 #123a58, inset 3px 3px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Signature chips for Snake (green segments + red food). */
+.chip-snake {
+  width: 34px;
+  height: 34px;
+  border-radius: 4px;
+  border: 3px solid #000;
+  background: #63c74d;
+  box-shadow: inset -4px -4px 0 #3d8a2e, inset 3px 3px 0 rgba(255, 255, 255, 0.25);
+}
+
+.chip-snake-head {
+  background: #8ae55f;
+  box-shadow: inset -4px -4px 0 #5cb43a, inset 3px 3px 0 rgba(255, 255, 255, 0.35);
+}
+
+.chip-food {
+  box-shadow: inset -4px -4px 0 #a02c34, inset 3px 3px 0 rgba(255, 255, 255, 0.3);
+}
+
+.game-title {
+  font-family: var(--font-pixel);
+  font-size: clamp(16px, 5vw, 34px);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000;
+  line-height: 1.5;
+}
+
+.game-desc {
+  font-family: var(--font-term);
+  font-size: 22px;
+  color: #d7deec;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.game-play {
+  font-family: var(--font-pixel);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--accent);
+  margin-top: 6px;
+}
+
+.game-play:hover {
+  color: #ffffff;
+}
+
+/* ===== Footer note ===== */
+.hub-note {
+  margin-top: 40px;
+  text-align: center;
+  font-family: var(--font-term);
+  font-size: 16px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.return-astro {
+  align-self: center;
+  margin-top: 24px;
+  padding: 12px 18px;
+  border: 3px solid #000;
+  background: var(--accent-dark);
+  box-shadow: var(--pixel-shadow);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none;
+  transition: transform 0.08s steps(2), box-shadow 0.08s steps(2);
+}
+
+.return-astro:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #000;
+}
+
+.return-astro:active {
+  transform: translate(3px, 3px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 520px) {
+  .game-card {
+    padding: 22px 18px;
+  }
+  .title {
+    font-size: 16px;
+  }
+}
