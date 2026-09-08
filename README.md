@@ -71,4 +71,4 @@ Las reglas del juego se validan en el servidor (copia espejo de `js/board.js`), 
 
 ## Licencia
 
-Proyecto personal — usa lo que quieras.
+Este proyecto está bajo la licencia **GNU GPLv3** (ver [LICENSE](LICENSE)). Puedes usarlo, modificarlo y distribuirlo libremente, siempre que las versiones modificadas se publiquen también bajo la misma licencia (código abierto y gratuito).
