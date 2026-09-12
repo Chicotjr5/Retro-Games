@@ -69,6 +69,10 @@ Las reglas del juego se validan en el servidor (copia espejo de `js/board.js`), 
    - Con multijugador: exporta un módulo con `{ name, root, createController() }` usando `lib/rooms.js` (mira `connect-4/server.js` como ejemplo).
 3. Añade una tarjeta al hub en `index.html`.
 
+## Probar juegos
+
+Para poder probar los juegos, he desarrollado la siguiente página: https://marchm.net/retro-games/
+
 ## Licencia
 
 Este proyecto está bajo la licencia **GNU GPLv3** (ver [LICENSE](LICENSE)). Puedes usarlo, modificarlo y distribuirlo libremente, siempre que las versiones modificadas se publiquen también bajo la misma licencia (código abierto y gratuito).
